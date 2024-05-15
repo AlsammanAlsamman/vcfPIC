@@ -1,1 +1,3 @@
 exportPattern("^[[:alpha:]]+")
+# To use C
+useDynLib(vcfPIC, .registration=TRUE)
