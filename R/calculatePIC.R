@@ -1,35 +1,13 @@
 #' Calculate the polymorphism information content (PIC) of a set of alleles
-#' @importFrom inline cfunction
-#' @param freq A numeric vector of allele frequencies
+#' @param AlleleFreq A matrix of allele frequencies,
+#' with rows representing alleles and columns representing individuals \code{\link{calculateAlleleFreq}}
 #' @return The polymorphism information content (PIC) of the alleles
 #' @export
-PICvec<-cfunction(c(freq="numeric"),"
-    // get the length of the vector
-    int n = LENGTH(freq);
-    // create a
-    double *p = REAL(freq);
-    // create a matrix of outer products
-    double o[n][n];
-    double PIC;
-
-    // Calculate the outer product of p^2
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            o[i][j] = p[i] * p[i] * p[j] * p[j];
-        }
-    }
-
-    // Calculate PIC
-    double sum_p_squared = 0.0;
-    double sum_upper_tri_o = 0.0;
-
-    for (int i = 0; i < n; i++) {
-        sum_p_squared += p[i] * p[i];
-        for (int j = i + 1; j < n; j++) {
-            sum_upper_tri_o += 2 * o[i][j];
-        }
-    }
-  PIC = 1 - sum_p_squared - sum_upper_tri_o;
-  return ScalarReal(PIC);
-")
+calculatePIC<-function(AlleleFreq)
+{
+  markerFreq<-.Call("calculatePIC", as.matrix(AlleleFreq[,-c(1:3)]))
+  # create a data frame with the PIC values
+  PIC<-data.frame(rs=AlleleFreq[,1], chr=AlleleFreq[,2], pos=AlleleFreq[,3], PIC=markerFreq)
+  return(PIC)
+}
 
