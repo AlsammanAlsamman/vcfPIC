@@ -3,12 +3,12 @@
 
 
 // Function to calculate allele frequencies
-SEXP calculateAlleleFreq_c(SEXP vcfx, SEXP numberOfRows, SEXP numberOfColumns) {
+SEXP calculateAlleleFreqVCF_c(SEXP vcfx) {
   // The matrix of characters from R in VCF format
   SEXP vcf_R = PROTECT(coerceVector(vcfx, STRSXP));
 
-  int nr = asInteger(numberOfRows);
-  int nc = asInteger(numberOfColumns);
+  int nr = nrows(vcfx);
+  int nc = ncols(vcfx);
 
   // create a matrix of frequencies of nr * 3
   // 0, 1, 2

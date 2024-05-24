@@ -5,9 +5,11 @@
 #' @export
 calculatePIC<-function(AlleleFreq)
 {
-  markerFreq<-.Call("calculatePIC", as.matrix(AlleleFreq[,-c(1:3)]))
+  # calculate the PIC values
+  print("Calculating PIC values\n")
+  markerFreq<-.Call("calculatePIC_c", as.matrix(AlleleFreq[,-c(1:4)]))
   # create a data frame with the PIC values
-  PIC<-data.frame(rs=AlleleFreq[,1], chr=AlleleFreq[,2], pos=AlleleFreq[,3], PIC=markerFreq)
+  PIC<-data.frame(rs=AlleleFreq[,1], alleles=AlleleFreq[,2], chr=AlleleFreq[,3], pos=AlleleFreq[,4], AA=AlleleFreq[,5], AB=AlleleFreq[,6], BB=AlleleFreq[,7],PIC=markerFreq)
   return(PIC)
 }
 
