@@ -34,12 +34,17 @@ library(vcfPIC)
 ### Calculate PIC from different file formats
 #### from HapMap file
 ```R
-PIC.hapmap <- calculatePIC("data/sheep_genotypes.hmp", "hapmap")
+
+data("sheep_genotypes_hapmap")
+
+PIC.hapmap <- calculatePIC(sheep_genotypes_hapmap, "hapmap")
 head(PIC.hapmap)
 ```
 #### from VCF file
 ```R
-PIC.vcf <- calculatePIC("data/sheep_genotypes.vcf", "vcf")
+data("sheep_genotypes_vcf")
+
+PIC.vcf <- calculatePIC(sheep_genotypes_vcf, "vcf")
 head(PIC.vcf)
 ```
 
@@ -51,21 +56,31 @@ The Genetic Binary Table file is a tab-delimited text file with the following fo
 | rs1 | A/T     | 1   | 100 | 2       | 0       | 1       | 1       | -1      | 1       | 0       |
 | rs2 | C/G     | 1   | 200 | 0       | 2       | 0       | 1       | 2       | 0       | 1       |
 | rs3 | A/C     | 1   | 300 | 2       | 0       | 1       | 0       | 1       | 2       | 0       |
+
+* rs: SNP ID
+* alleles: Alleles of the SNP (The value can be "-" if not available)
+* chr: Chromosome number of the SNP (The value can be "-" if not available)
+* pos: Position of the SNP on the chromosome (The value can be "-" if not available)
 ```
 
-
-
+```R
+data("sheep_genotypes_binary")
+PIC.binary <- calculatePIC(sheep_genotypes_binary, "binary")
+```
 
 ### Calculate PIC step by step
 
 ```R
 library(vcfPIC)
 
+# The path to the package data, where the VCF , HapMap and Binary files are stored
+vcfPICpath <- system.file(package="vcfPIC")
 
 ###### VCF
 
 # Step 1: Read the VCF data
-vcfData <- readVCF("data/sheep_genotypes.vcf")
+
+vcfData <- readVCF(paste(vcfPICpath,"/data/sheep_genotypes.vcf",sep="") )
 head(vcfData)
 
 # Step 2: Calculate allele frequencies from VCF data
@@ -78,7 +93,7 @@ head(PIC.vcf)
 
 ###### HapMap
 # Step 1: Read the HapMap data
-hapmapData <- readHapmap("data/sheep_genotypes.hmp")
+hapmapData <- readHapmap(paste(vcfPICpath,"/data/sheep_genotypes.hmp",sep=""))
 
 # Step 1: Convert HapMap genotypes to binary numeric format
 hapmapData.Binary <- convertGenoBi2Numeric(hapmapData)
@@ -90,7 +105,7 @@ head(PIC)
 
 ###### Binary
 # Step 1: Read the binary genetic data
-binaryData <- readGeneticBinaryTable("data/sheep_genotypes_binary.tsv", header=TRUE, sep="\t")
+binaryData <- readGeneticBinaryTable(paste(vcfPICpath,"/data/sheep_genotypes_binary.tsv",sep=""), header=TRUE, sep="\t")
 head(binaryData)
 
 # Step 2: Calculate allele frequencies from binary data

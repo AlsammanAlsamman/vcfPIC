@@ -13,7 +13,7 @@
 readGeneticBinaryTable<-function(binartablepath, header=TRUE, sep="\t", ...)
 {
   # Read the binary table
-  binarytable<-read.csv("data/sheep_genotypes_binary.tsv", header=header, sep=sep, ...)
+  binarytable<-read.csv(binartablepath, header=header, sep=sep, ...)
   print("Please be aware that genetic alleles values should be coded as 0, 1, 2, -1, and if not, the results may be incorrect.")
   return(binarytable)
 }
