@@ -1,15 +1,43 @@
-#' Calculate the polymorphism information content (PIC) of a set of alleles
-#' @param AlleleFreq A matrix of allele frequencies,
-#' with rows representing alleles and columns representing individuals \code{\link{calculateAlleleFreq}}
-#' @return The polymorphism information content (PIC) of the alleles
+#' Calculate Polymorphic Information Content (PIC) from VCF , Hapmap file, Genetic Binary Table read by \code{\link{readGeneticBinaryTable}}
+#' @param filepath path to the file
+#' @param filetype type of file, either vcf , hapmap , or genetic binary table
+#' @param outpath path to write the PIC values
+#' @return PIC values
 #' @export
-calculatePIC<-function(AlleleFreq)
+#' @examples
+#' calculatePIC("data/sheep_genotypes.vcf", "vcf")
+#' calculatePIC("data/sheep_genotypes.hmp", "hapmap")
+#' calculatePIC("data/sheep_genotypes_binary.tsv", "binary")
+
+calculatePIC<-function(filepath, filetype,outpath="")
 {
-  # calculate the PIC values
-  print("Calculating PIC values\n")
-  markerFreq<-.Call("calculatePIC_c", as.matrix(AlleleFreq[,-c(1:4)]))
-  # create a data frame with the PIC values
-  PIC<-data.frame(rs=AlleleFreq[,1], alleles=AlleleFreq[,2], chr=AlleleFreq[,3], pos=AlleleFreq[,4], AA=AlleleFreq[,5], AB=AlleleFreq[,6], BB=AlleleFreq[,7],PIC=markerFreq)
+  PIC <- NULL
+  if(filetype=="vcf")
+  {
+    vcfData<-readVCF(filepath)
+    freqVCF<-calculateAlleleFreqVCF(vcfData)
+    PIC <- calculatePICByFreq(freqVCF)
+  }
+  else if(filetype=="hapmap")
+  {
+    hapmapData<-readHapmap(filepath)
+    hapmapData.Binary<-convertGenoBi2Numeric(hapmapData)
+    freqHAP<-calculateAlleleFreqHapMap(hapmapData)
+    PIC <- calculatePICByFreq(freqHAP)
+  }
+  else if(filetype=="binary")
+  {
+    binaryData<-readGeneticBinaryTable(filepath, header=TRUE, sep="\t")
+    TableBinarFreq<-calculateAlleleFreqBinary(binaryData)
+    PIC <- calculatePICByFreq(TableBinarFreq)
+  } else
+  {
+    print("Invalid file type, please choose either vcf or hapmap")
+  }
+
+  if(outpath!="")
+  {
+    write.table(PIC, outpath, sep="\t", row.names=FALSE)
+  }
   return(PIC)
 }
-

@@ -18,7 +18,7 @@ calculateAlleleFreqHapMap <- function(hapmapData, roundnum=2){
   print(paste("The allele matrix is:","row:",nrow(hapmapData),"column:",ncol(hapmapData)))
   freq<-.Call("calculateFreq_c",as.matrix(hapmapData))
 
-  round(freq,roundnum)
+  freq<-round(freq,roundnum)
   # convert the output to a data frame
   markerFreq<-cbind(rs,alleles,chr,pos,freq)
   # add the rs, chr and pos columns

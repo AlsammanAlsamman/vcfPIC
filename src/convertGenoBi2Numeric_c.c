@@ -28,7 +28,7 @@ SEXP convertGenoBi2Numeric_c (SEXP matrixOfGenotypes){
   PROTECT(matrixOfSNPsNumeric = allocMatrix(INTSXP,numberOfRows,numberOfColumns));
   // convert matrixOfGenotypes to numeric 0,1,2
   for(i=0;i<numberOfRows;i++){
-    // we need to detemine the allele A, which is the first allele in the first SNP in each row
+    // we need to determine the allele A, which is the first allele in the first SNP in each row
     char alleleA ;
     for(j=0;j<numberOfColumns;j++){
       if(matrixOfGenotypesChar[i+j*numberOfRows][0] != '0'){

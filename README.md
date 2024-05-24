@@ -1,19 +1,15 @@
-
 # vcfPIC R Package
 
-# UNDER DEVELOPMENT
-
-
 ## Overview
-The **PIC Calculator** R package is designed to calculate Polymorphism Information Content (PIC) values for Single Nucleotide Polymorphisms (SNPs) from a VCF (Variant Call Format) file. PIC values provide a measure of the informativeness of genetic markers for linkage and association studies.
+The **PIC Calculator** R package is designed to calculate Polymorphism Information Content (PIC) values for Single Nucleotide Polymorphisms (SNPs) from a VCF (Variant Call Format) , HapMap (Haplotype Map) or Genetic Binary Table file. PIC values provide a measure of the informativeness of genetic markers for linkage and association studies.
 ```math
 PIC = 1 - \sum_{i=1}^{n} P_{ij}^2 
 ```
 where \(P_{ij}\) is the frequency of the \(j^{th}\) allele for the \(i^{th}\) SNP, and \(n\) is the number of alleles for the SNP.
 
 ## Features
-- **Calculate PIC Values**: Compute PIC values for each SNP in a given VCF file.
-- **Efficient Processing**: Handle large VCF files efficiently using optimized R functions.
+- **Calculate PIC Values**: Compute PIC values for each SNP in a given VCF / HapMap / Genetic Binary Table file.
+- **Efficient Processing**: Handle large files efficiently using optimized R functions coded using C.
 - **Easy Integration**: Seamlessly integrate with other bioinformatics tools and pipelines in R.
 
 ## Installation
@@ -35,52 +31,77 @@ devtools::install_github("AlsammanAlsamman/vcfPIC")
 ```R
 library(vcfPIC)
 ```
-
-### Calculate PIC from a VCF File
-
+### Calculate PIC from different file formats
+#### from HapMap file
 ```R
-# Define the path to your VCF file
-vcf_file <- "path/to/your/vcf_file.vcf"
-
-# Calculate PIC values for the SNPs in the VCF file
-pic_values <- calculatePIC(vcf_file)
-
-# Print the PIC values
-print(pic_values)
+PIC.hapmap <- calculatePIC("data/sheep_genotypes.hmp", "hapmap")
+head(PIC.hapmap)
+```
+#### from VCF file
+```R
+PIC.vcf <- calculatePIC("data/sheep_genotypes.vcf", "vcf")
+head(PIC.vcf)
 ```
 
-### Example
-
-```R
-# Example VCF file provided in the package
-vcf_file <- system.file("extdata", "example.vcf", package = "picCalculator")
-
-# Calculate PIC values
-pic_values <- calculatePIC(vcf_file)
-
-# Print the PIC values
-print(pic_values)
+#### from Genetic Binary Table file
+The Genetic Binary Table file is a tab-delimited text file with the following format:
+```markdown
+| rs  | alleles | chr | pos | sample1 | sample2 | sample3 | sample4 | sample5 | sample6 | sample7 |
+|-----|---------|-----|-----|---------|---------|---------|---------|---------|---------|---------|
+| rs1 | A/T     | 1   | 100 | 2       | 0       | 1       | 1       | -1      | 1       | 0       |
+| rs2 | C/G     | 1   | 200 | 0       | 2       | 0       | 1       | 2       | 0       | 1       |
+| rs3 | A/C     | 1   | 300 | 2       | 0       | 1       | 0       | 1       | 2       | 0       |
 ```
 
-## Functions
-
-### calculatePIC
-
-- **Description**: Calculate PIC values for SNPs in a VCF file.
-- **Usage**:
-  ```R
-  calculatePIC(vcf_file)
-  ```
-- **Arguments**:
-  - `vcf_file`: A character string specifying the path to the VCF file.
-- **Returns**: A data frame with PIC values for each SNP.
 
 
 
+### Calculate PIC step by step
 
-## Acknowledgements
+```R
+library(vcfPIC)
 
-This package was developed with support from [Your Institution/Organization]. Special thanks to all contributors and users.
+
+###### VCF
+
+# Step 1: Read the VCF data
+vcfData <- readVCF("data/sheep_genotypes.vcf")
+head(vcfData)
+
+# Step 2: Calculate allele frequencies from VCF data
+freqVCF <- calculateAlleleFreqVCF(vcfData)
+head(freqVCF)
+
+# Step 3: Calculate PIC from allele frequencies of VCF data
+PIC.vcf <- calculatePICByFreq(freqVCF)
+head(PIC.vcf)
+
+###### HapMap
+# Step 1: Read the HapMap data
+hapmapData <- readHapmap("data/sheep_genotypes.hmp")
+
+# Step 1: Convert HapMap genotypes to binary numeric format
+hapmapData.Binary <- convertGenoBi2Numeric(hapmapData)
+head(hapmapData.Binary)
+
+# Step 2: Calculate PIC directly from a VCF file
+PIC <- calculatePIC("data/sheep_genotypes.vcf", "vcf")
+head(PIC)
+
+###### Binary
+# Step 1: Read the binary genetic data
+binaryData <- readGeneticBinaryTable("data/sheep_genotypes_binary.tsv", header=TRUE, sep="\t")
+head(binaryData)
+
+# Step 2: Calculate allele frequencies from binary data
+TableBinarFreq <- calculateAlleleFreqBinary(binaryData)
+head(TableBinarFreq)
+
+# Step 3: Calculate PIC from allele frequencies of binary data
+PIC.vcf <- calculatePICByFreq(TableBinarFreq)
+head(PIC.vcf)
+
+```
 
 ## Contact
 

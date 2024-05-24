@@ -22,7 +22,7 @@ calculateAlleleFreqVCF<-function(vcf, roundnum=2){
   nc<-ncol(vcf)
   ############## Call the C function
   markerFreq<-.Call("calculateAlleleFreqVCF_c", vcf, as.integer(nr), as.integer(nc), PACKAGE="vcfPIC")
-  round(markerFreq,roundnum)
+  markerFreq<-round(markerFreq,roundnum)
   # convert the output to a data frame
   markerFreq<-cbind(rs,alleles,chr,pos,markerFreq)
   # add the rs, chr and pos columns

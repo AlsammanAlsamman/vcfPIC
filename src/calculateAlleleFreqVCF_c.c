@@ -28,7 +28,6 @@ SEXP calculateAlleleFreqVCF_c(SEXP vcfx) {
     for(int c=0; c<nc; c++){
 
       const char *genotype = CHAR(STRING_ELT(vcf_R, r+c*nr));
-
       // if genotype contains a 0/0 add 1 to the first column in the first row
       if(strstr(genotype, "0/0") != NULL){
         freq_p[r] += 1;

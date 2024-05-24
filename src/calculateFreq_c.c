@@ -58,7 +58,6 @@ SEXP calculateFreq_c(SEXP alleleMatrix)
     freqPtr[k] = a1/sum;
     freqPtr[k + i] = a2/sum;
     freqPtr[k + 2 * i] = a3/sum;
-    // Rprintf("\n");
   }
   UNPROTECT(1);
   return freq;
