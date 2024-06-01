@@ -120,5 +120,5 @@ head(PIC.vcf)
 
 ## Contact
 
-For any questions or inquiries, please contact Alsamman at smahmoud[useAandT]ageri.sci.eg.
+For any questions or inquiries, please contact Alsamman at a.alsamman[useAandT]cgiar.org.
 
